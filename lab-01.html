@@ -11,7 +11,7 @@
 
 <meta name="author" content="Mate Roka" />
 
-<meta name="date" content="2025-09-26" />
+<meta name="date" content="2025-10-07" />
 
 <title>Lab 01 - UK Attractions</title>
 
@@ -352,7 +352,7 @@ display: none;
 
 <h1 class="title toc-ignore">Lab 01 - UK Attractions</h1>
 <h4 class="author">Mate Roka</h4>
-<h4 class="date">2025-09-26</h4>
+<h4 class="date">2025-10-07</h4>
 
 </div>
 
@@ -651,8 +651,15 @@ visitors_with_nations %&gt;%
 <p><em>How many tourist attractions are there in each of the 4 nations?
 From this, discuss in your group how reliable you think the
 inter-quartile estimates are.</em></p>
-<pre class="r"><code>#________ %&gt;%
-#  ______(_______)</code></pre>
+<pre class="r"><code>visitors_with_nations %&gt;%
+  count(nation)</code></pre>
+<pre><code>## # A tibble: 4 × 2
+##   nation               n
+##   &lt;chr&gt;            &lt;int&gt;
+## 1 England            240
+## 2 Northern Ireland     9
+## 3 Scotland            97
+## 4 Wales                2</code></pre>
 </div>
 </div>
 </div>
@@ -662,7 +669,19 @@ inter-quartile estimates are.</em></p>
 <h3>Exercise m.</h3>
 <p><em>Within each of the 4 nations, what is the proportion of tourist
 attractions that have free admission for all visitors?</em></p>
-<pre class="r"><code># Write your code here</code></pre>
+<pre class="r"><code>visitors_with_nations %&gt;% 
+  group_by(nation) %&gt;% 
+  count(admission) %&gt;% 
+  mutate(pct = 100*n/sum(n)) %&gt;% 
+  filter(admission==&quot;Free&quot;) %&gt;% 
+  arrange(desc(pct))</code></pre>
+<pre><code>## # A tibble: 3 × 4
+## # Groups:   nation [3]
+##   nation           admission     n   pct
+##   &lt;chr&gt;            &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt;
+## 1 England          Free         93  38.8
+## 2 Scotland         Free         34  35.1
+## 3 Northern Ireland Free          1  11.1</code></pre>
 </div>
 <div id="exercise-n." class="section level3">
 <h3>Exercise n.</h3>
@@ -670,7 +689,18 @@ attractions that have free admission for all visitors?</em></p>
 to 2022. Of the tourist attractions in Scotland, sort into increasing
 numerical order the types of admission charges based on the mean
 percentage change in visitor numbers.</em></p>
-<pre class="r"><code># Write your code here</code></pre>
+<pre class="r"><code>visitors_with_nations %&gt;% 
+  mutate(change=(n_2022-n_2021)/n_2021) %&gt;% 
+  filter(nation==&quot;Scotland&quot;) %&gt;% 
+  group_by(admission) %&gt;% 
+  summarise(mean=mean(change, na.rm=TRUE)) %&gt;% 
+  arrange(mean)</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##   admission   mean
+##   &lt;chr&gt;      &lt;dbl&gt;
+## 1 Charged   0.0465
+## 2 Members   1.38  
+## 3 Free      3.03</code></pre>
 </div>
 </div>
 
